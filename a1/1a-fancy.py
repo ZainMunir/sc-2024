@@ -12,11 +12,12 @@ if not input_file:
 
 cipher_text = ""
 with open(input_file, "r") as f:
-    cipher_text = f.read().lower()
+    cipher_text = f.read()
 if not cipher_text:
     print(colored("No cipher text", "red"))
     sys.exit(1)
 
+lowered_cipher_text = cipher_text.lower()
 filtered_cipher_text = "".join([c.lower() for c in cipher_text if c.isalpha()])
 cipher_text_len = len(filtered_cipher_text)
 
@@ -24,7 +25,7 @@ similarity_scores = []
 
 for i in range(26):
     decrypted_text = ""
-    for c in cipher_text:
+    for c in lowered_cipher_text:
         if c.isalpha():
             decrypted_text += chr((ord(c) - ord("a") - i) % 26 + ord("a"))
         else:
@@ -34,8 +35,10 @@ for i in range(26):
     num_english_words = sum([dictionary.check(word) for word in words])
     similarity_scores.append(num_english_words / num_words * 100)
 
+
 def nth_max_index(lst, n):
     return sorted(range(len(lst)), key=lambda i: lst[i], reverse=True)[n]
+
 
 potential_keys = [
     nth_max_index(similarity_scores, i) for i in range(len(similarity_scores))
@@ -43,9 +46,11 @@ potential_keys = [
 
 for key in potential_keys:
     decrypted_text = ""
-    for c in cipher_text:
-        if c.isalpha():
-            decrypted_text += chr((ord(c) - ord("a") - key) % 26 + ord("a"))
+    for c, lc in zip(cipher_text, lowered_cipher_text):
+        if lc.isalpha():
+            decrypted_text += chr((ord(lc) - ord("a") - key) % 26 + ord("a"))
+            if c.isupper():
+                decrypted_text = decrypted_text[:-1] + decrypted_text[-1].upper()
         else:
             decrypted_text += c
     print(colored(f"Using key: {key}", "red"))
