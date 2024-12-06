@@ -1,3 +1,6 @@
+import math
+
+
 def pretty_print(dictionary):
     for key in dictionary:
         # print rounded
@@ -93,7 +96,7 @@ for c in C:
         plains_given_ciphers[(p, c)] = plain_given_cipher(p, c, ciphers_given_plains)
 
 
-print("p(P=m)")
+print("p(M=m)")
 pretty_print(M)
 print()
 print("p(K=k)")
@@ -102,8 +105,23 @@ print()
 print("p(C=c)")
 pretty_print(C)
 print()
-print("p(C=c|P=m)")
+print("p(C=c|M=m)")
 pretty_print(ciphers_given_plains)
 print()
-print("p(P=m|C=c)")
+print("p(M=m|C=c)")
 pretty_print(plains_given_ciphers)
+print()
+
+
+entropy = 0
+for m in M:
+    for c in C:
+        entropy += (
+            C[c]
+            * plains_given_ciphers[(m, c)]
+            * math.log2(plains_given_ciphers[(m, c)])
+        )
+entropy = -entropy
+print(
+    f"Entropy: {round(entropy, 3)}",
+)
