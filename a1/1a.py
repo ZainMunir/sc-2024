@@ -31,8 +31,8 @@ english_frequency = {
     "z": 0.074,
 }
 
-input_file = "input-1a.txt"
-# input_file = input(colored("Enter the input file: ", "green"))
+# input_file = "input-1a.txt"
+input_file = input(colored("Enter the input file: ", "green"))
 if not input_file:
     print(colored("No input file", "red"))
     sys.exit(1)
